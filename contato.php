@@ -7,7 +7,7 @@
 </head>
 <body>
     <main>
-        <h1>Página de Contato</h1>
+        <h1>Entrar em Contato</h1>
     </main>
 </body>
 </html>
