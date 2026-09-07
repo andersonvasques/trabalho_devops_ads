@@ -1,0 +1,77 @@
+name: Integração Contínua
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  php-syntax:
+    name: Verificar sintaxe PHP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v6
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Verificar sintaxe dos arquivos PHP
+        run: |
+          find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
+  docker:
+    name: Testar ambiente Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v6
+
+      - name: Validar Docker Compose
+        run: docker compose config
+
+      - name: Iniciar containers
+        run: docker compose up -d
+
+      - name: Verificar containers
+        run: docker compose ps
+
+      - name: Aguardar aplicação
+        run: |
+          for i in {1..10}; do
+            if curl --fail http://localhost:8080; then
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          docker compose logs
+          exit 1
+
+      - name: Testar página inicial
+        run: curl --fail http://localhost:8080/index.php
+
+      - name: Testar página de produtos
+        run: curl --fail http://localhost:8080/produtos.php
+
+      - name: Testar página de contato
+        run: curl --fail http://localhost:8080/contato.php
+
+      - name: Exibir logs em caso de falha
+        if: failure()
+        run: docker compose logs
+
+      - name: Encerrar containers
+        if: always()
+        run: docker compose down
