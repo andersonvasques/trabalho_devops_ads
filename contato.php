@@ -7,7 +7,7 @@
 </head>
 <body>
     <main>
-        <h1>Entrar em Contato</h1>
+        <h1>Teste</h1>
     </main>
 </body>
 </html>

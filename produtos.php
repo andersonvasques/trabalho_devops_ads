@@ -8,6 +8,7 @@
 <body>
     <main>
         <h1>Texto alterado</h1>
+        <h1>Teste 2</h1>
     </main>
 </body>
 </html>
