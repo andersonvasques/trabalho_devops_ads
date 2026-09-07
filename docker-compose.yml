@@ -1,0 +1,35 @@
+services:
+  php:
+    image: php:8.3-fpm
+    container_name: trabalho_devops_php
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - trabalho_devops
+
+  nginx:
+    image: nginx:alpine
+    container_name: trabalho_devops_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - trabalho_devops
+
+  composer:
+    image: composer:2
+    container_name: trabalho_devops_composer
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - trabalho_devops
+    entrypoint: ["composer"]
+
+networks:
+  trabalho_devops:
